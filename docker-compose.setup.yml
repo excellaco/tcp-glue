@@ -1,0 +1,14 @@
+version: '3.4'
+
+x-reference-data:
+  node-default: &node-default
+    entrypoint: ""
+    command: yarn install --check-files
+
+services:
+  api:
+    command: bash -xc "echo Nothing to do"
+
+  frontend-admin: *node-default
+
+  frontend-public: *node-default

@@ -1,0 +1,8 @@
+/downloads/*
+.last-built-version
+.bashful/
+*.log
+build-assets/*
+
+*.iml
+.idea/

@@ -1,0 +1,76 @@
+# $include: bin/common-config.yml
+# $include: tcp-glue/bin/repos.yml
+
+config:
+  log-path: build.log
+  collapse-on-completion: false
+  show-task-times: true
+  vintage: false
+  event-driven: false
+  update-interval: 250
+  show-summary-errors: true
+  max-parallel-commands: 6
+  show-task-times: true
+
+x-reference-data:
+  all-apps: &app-names
+    #- $include tcp-glue/bin/repos.yml
+    - ecs
+    - angular
+    - java
+    - jenkins
+
+tasks:
+  - name: Clone Git repositories
+    parallel-tasks:
+      - name: <replace>
+        cmd: ./bin/build/git-clone.sh <replace>
+        tags: <replace>
+        for-each: *app-names
+
+  # - name: Download assets and install tools
+  #   parallel-tasks:
+
+  #     - name: FPG helper script
+  #       cmd: mkdir -p ~/.config ; echo export FEMA_PROTO_GLUE_DIRECTORY=`pwd` > ~/.config/tcp-glue-config ; ./bin/tcp-glue.sh update
+
+  #     - name: Docker and Docker Compose
+  #       cmd: ./bin/build/download-docker-tools.sh
+
+  #     - name: Copy <replace> build assets
+  #       cmd: ./bin/build/copy-build-assets.sh <replace>
+  #       tags: <replace>
+  #       for-each: *apps
+
+  ######## Repo app settings ########
+
+  # - name: Stopping apps
+  #   cmd: docker-compose down
+  #   ignore-failure: true
+
+  # - name: Building app docker images
+  #   cmd: docker-compose build
+
+  # - name: Creating app containers
+  #   cmd: docker-compose create
+
+  # - name: Prepping environment
+  #   parallel-tasks:
+  #     - name: Install git hook for tcp-glue versioning
+  #       cmd: rm -f ./.git/hooks/pre-commit &> /dev/null ; cp ./bin/post-commit ./.git/hooks/post-commit
+  #       stop-on-failure: false
+
+  #     - name: Clean up previous docker-compose installations
+  #       cmd: rm -f ./downloads/docker-compose
+
+  # - name: Start application container dependencies
+  #   cmd: docker-compose up -d fp-db
+
+  # - name: Fetching dependencies and migrating apps
+  #   collapse-on-completion: false
+  #   parallel-tasks:
+  #     - name: <replace>
+  #       cmd: docker-compose -f docker-compose.yml -f docker-compose.setup.yml run --rm <replace>
+  #       stop-on-failure: false
+  #       tags: <replace>
+  #       for-each: *apps

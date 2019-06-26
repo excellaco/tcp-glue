@@ -1,0 +1,69 @@
+version: '3.4'
+
+x-reference-data:
+  node-default: &node-default
+    image: dev.node:8
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.node
+
+services:
+  db:
+    container_name: db
+    image: postgres:10.2-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tcp
+      - PGDATA=/pgdata
+    volumes:
+      - pgdata:/pgdata
+  api-java:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.java
+    image: dev.java:8
+    command: gradle bootRun
+    volumes:
+      - ../tcp-api:/app
+      - gradle_cache:/home/gradle/.gradle
+    ports:
+      - "8080:8080"
+    environment:
+      - DEVELOPMENT=true
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/fema
+      - SPRING_DATASOURCE_USER=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - db
+  frontend-admin:
+    <<: *node-default
+    entrypoint: /home/node/entrypoint.sh
+    command: yarn start
+    ports:
+      - "3001:3001"
+      - "4445:4444"
+      - "9223:9222"
+    volumes:
+      - ../tcp-frontend-admin:/app
+      - yarn_cache:/home/node/.cache
+    depends_on:
+      - api
+  frontend-public:
+    <<: *node-default
+    entrypoint: /home/node/entrypoint.sh
+    command: yarn start
+    ports:
+      - "3000:3000"
+      - "4444:4444"
+      - "9222:9222"
+    volumes:
+      - ../tcp-frontend-public:/app
+      - yarn_cache:/home/node/.cache
+    depends_on:
+      - api
+volumes:
+  yarn_cache:
+  pgdata:
+  gradle_cache:
