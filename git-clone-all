@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Repo names
+repos='tcp-ecs jenkins tcp-java tcp-angular tcp-react xg'
+# Repo base address
+account='git@github.com:excellaco/'
+
+for repo in $repos;
+do
+	git clone $account$repo.git
+done

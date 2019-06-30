@@ -6,3 +6,11 @@ build-assets/*
 
 *.iml
 .idea/
+
+tcp-angular/
+tcp-ecs/
+tcp-java/
+tcp-react/
+tcp-jenkins/
+jenkins/
+xg/
