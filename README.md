@@ -2,16 +2,14 @@
 
 Key Features:
 
+* **Clone all repos** (in the .repos file). If new ones are added it can be run again: `./git-clone-all`
 * **Start up multiple services**: including core services at once, and specified individual services, all on the same network so they can talk, including the following. Service names are in .repos and in the ./run file:
     ```
     ./run core    # Starts main app services
 
     ./run <SERVICE NAME or ALIAS>
     ```
-* **Clone all repos** (in the .repos file). If new ones are added it can be run again: `./git-clone-all`
 * **Update/pull all repos**: `./git-pull-all`
-    
-* **API call shortcuts**: `./api legacy initiateCase`
     
 ## Setup
 
