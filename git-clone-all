@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# Repo names
-repos='tcp-ecs jenkins tcp-java tcp-angular tcp-react xg'
-# Repo base address
-account='git@github.com:excellaco/'
+. .repos
 
 for repo in $repos;
 do

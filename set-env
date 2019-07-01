@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#
+# Usage:
+#
+#   ./set-env <environment>
+#
+#   Example: ./api legacy initiateCase
+#
+
+if [ $# -lt 1 ]; then
+   echo "[Error] Need to pass the desired environment"; exit;
+fi
+
+ENV_FILE='.env'
+if [ -n "$1" ]; then
+  ENV_FILE=$ENV_FILE-$1
+fi
+source $ENV_FILE

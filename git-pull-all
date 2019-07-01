@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# Repo names
-repos='tcp-ecs jenkins tcp-java tcp-angular tcp-react xg'
+. .repos
+
+BASE_DIR=$(pwd)
 
 for repo in $repos;
 do
-	cd $repo
+  cd $BASE_DIR/$repo
+  git checkout master
 	git pull origin master
-	cd ..
 done
