@@ -1,6 +1,6 @@
 # Glue
 
-This is where you run and manage the services that make up the app. 
+This is where you run and manage the services that make up the app, from cloning and updating all related repositories, to starting multiple services able to talk to each other.
 
 You can:
 

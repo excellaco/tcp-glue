@@ -24,11 +24,12 @@ services:
     container_name: api
     image: openjdk:11
     build:
-      context: ./tcp-java
+      context: ./tcp-java/
       dockerfile: ./dockerfiles/Dockerfile.java
     volumes:
       - ./tcp-java:/app
       - gradle_cache:/root/.gradle
+    working_dir: /app
     ports:
       - "8080:8080"
       - "5005:5005"
