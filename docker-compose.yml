@@ -55,8 +55,6 @@ services:
       - node_cache:/home/node/.cache
     ports:
       - "4200:4200"
-    #depends_on:
-      #- api
   
 volumes:
   node_cache:
