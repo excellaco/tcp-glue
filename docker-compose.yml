@@ -36,8 +36,8 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      DB_USER: api_user
-      DB_PASSWORD: api_password
+      DB_USER: postgres
+      DB_PASSWORD: postgres
       JWT_KEY_STORE: ${JWT_KEY_STORE}
       JWT_KEY_STORE_PASS: ${JWT_KEY_STORE_PASS}
       JWT_KEYPAIR_ALIAS: ${JWT_KEYPAIR_ALIAS}

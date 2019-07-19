@@ -32,7 +32,7 @@ Memory: 4 Gb
 1. Run the needed command, often initially it would be the core services:
 
     ```
-    ./run core                      # Rtart main services, including database container
+    ./run core                      # Start main services, including database container
 
     ./run <SERVICE NAME or ALIAS>   # Run a single server
 
