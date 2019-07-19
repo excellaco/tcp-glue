@@ -1,13 +1,17 @@
-# tcp-glue
+# Glue
 
-Key Features:
+This is where you run and manage the services that make up the app. 
 
-* **Clone all repos** (in the .repos file). If new ones are added it can be run again: `./git-clone-all`
-* **Start up multiple services**: including core services at once, and specified individual services, all on the same network so they can talk, including the following. Service names are in .repos and in the ./run file:
+You can:
+
+* **Clone all repositories** (in the .repos file). If new ones are added it can be run again: `./git-clone-all`. Get onboarding developers running fast.
+* **Start up multiple services**: including core services at once, and specified individual services, all on the same network so they can talk. Service names are listed in .repos and in the ./run file:
     ```
     ./run core    # Starts main app services
 
     ./run <SERVICE NAME or ALIAS>
+
+    ./run db      # Start just a database
     ```
 * **Update/pull all repos**: `./git-pull-all`
     

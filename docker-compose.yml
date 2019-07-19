@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 
 x-reference-data:
   node-default: &node-default
@@ -18,52 +18,46 @@ services:
       - PGDATA=/pgdata
     volumes:
       - pgdata:/pgdata
-  api-java:
+  
+  api:
+    command: ["/app/gradlew", "bootRun"]
     container_name: api
+    image: openjdk:11
     build:
-      context: .
+      context: ./tcp-java
       dockerfile: ./dockerfiles/Dockerfile.java
-    image: dev.java:8
-    command: gradle bootRun
     volumes:
-      - ../tcp-api:/app
-      - gradle_cache:/home/gradle/.gradle
+      - ./tcp-java:/app
+      - gradle_cache:/root/.gradle
     ports:
       - "8080:8080"
+      - "5005:5005"
     environment:
-      - DEVELOPMENT=true
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/fema
-      - SPRING_DATASOURCE_USER=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: api_user
+      DB_PASSWORD: api_password
+      JWT_KEY_STORE: ${JWT_KEY_STORE}
+      JWT_KEY_STORE_PASS: ${JWT_KEY_STORE_PASS}
+      JWT_KEYPAIR_ALIAS: ${JWT_KEYPAIR_ALIAS}
+      JWT_KEYPAIR_PASS: ${JWT_KEYPAIR_PASS}
     depends_on:
       - db
-  frontend-admin:
-    <<: *node-default
-    entrypoint: /home/node/entrypoint.sh
-    command: yarn start
-    ports:
-      - "3001:3001"
-      - "4445:4444"
-      - "9223:9222"
+  
+  ui:
+    command: bash -c "npm install && npm run start:docker"
+    build:
+      context: ./tcp-angular/
+      dockerfile: local.Dockerfile
     volumes:
-      - ../tcp-frontend-admin:/app
-      - yarn_cache:/home/node/.cache
-    depends_on:
-      - api
-  frontend-public:
-    <<: *node-default
-    entrypoint: /home/node/entrypoint.sh
-    command: yarn start
+      - ./tcp-angular:/usr/src/app
+      - node_cache:/home/node/.cache
     ports:
-      - "3000:3000"
-      - "4444:4444"
-      - "9222:9222"
-    volumes:
-      - ../tcp-frontend-public:/app
-      - yarn_cache:/home/node/.cache
-    depends_on:
-      - api
+      - "4200:4200"
+    #depends_on:
+      #- api
+  
 volumes:
-  yarn_cache:
+  node_cache:
   pgdata:
   gradle_cache:
