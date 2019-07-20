@@ -2,12 +2,17 @@
 
 Welcome to the Tech Challenge Platform, which provides a way to quickly create comprehensive, realistic starter applications in a standardized way. It allows generation of each major component, from provided configuration.
 
-The components include:
+## Components
 
 * Front-end
 * Back-end
 * Deployment Pipelines
 * Cloud Infrastructure
+ 
+  
+---
+
+## Functionality 
 
 It has functionality that includes things often in production applications, including:
 
@@ -19,6 +24,10 @@ It has functionality that includes things often in production applications, incl
 * Microservices and SPA architecture
 * Deployment Pipelines
 * Automated tests
+
+--- 
+
+## Benefits 
 
 The benefits are many, from getting standardized applications created, wired together and deployed quickly, it makes it easier for the tech challenges to do their work. 
 

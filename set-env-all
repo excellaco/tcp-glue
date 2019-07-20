@@ -1,0 +1,1 @@
+# Loop through all directories from .repos and sources their .env-{env} file
