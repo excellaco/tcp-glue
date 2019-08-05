@@ -39,7 +39,11 @@ The benefits are many, from getting standardized applications created, wired tog
 
 ## Getting Started
 
-1. Use [xg](https://github.com/excellaco/xg) to generate a Glue repo, and the compoenents you want. Follow its README to specify configuration values, and the code will be generated and even checked into new GitHub repos.
+### Local Development Environment Setup
+
+1. Use [tcp-glue](https://github.com/excellaco/tcp-glue) to clone the repositories:
+
+   `./git-clone-all`
 
 1. Review the new repositories. Read the READMEs to familiarize yourself with the app components and structure, and how to use existing pieces to build a new app.
 
