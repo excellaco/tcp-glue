@@ -41,7 +41,9 @@ The benefits are many, from getting standardized applications created, wired tog
 
 ### Local Development Environment Setup
 
-1. Use [tcp-glue](https://github.com/excellaco/tcp-glue) to clone the repositories:
+1. Ensure you have Docker installed
+
+1. Clone [tcp-glue](https://github.com/excellaco/tcp-glue) to clone the rest of the repositories:
 
    `./git-clone-all`
 
