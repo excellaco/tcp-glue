@@ -120,7 +120,8 @@ mv ssh/*.pub ssh/*.pem .
 
 ## Accessing information
 We've leverage SSM parameters to store all vital information, including URIs, and verious credentials.  If you have a question like "What's the Sonar URL?", or "What's the Jenkins Login/Password?", check the SSM parameters in the AWS account.
-![alt text](./images/ssm_params.png "Sample SSM Parameters")
+
+![SSM Params](./images/ssm_params.png "Sample SSM Parameters")
 
 # End-to-End Destroy Process
 Do destroy the entire stack follow the below steps.
