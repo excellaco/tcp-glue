@@ -59,26 +59,19 @@ Follow the below steps to deploy an environment into a clean account.
      ```
 1. RUN: `./git-clone-all` [3]
     1. RUN: `./make-netrc && ./push-netrc`
+    1. Fill out glue.auto.tfvars
+    1. RUN: `./push-glue-auto-tfvars`
 
 1. RUN: `cd tcp-ecs` [3b]
-    1. Update `aws/terraform.tfvars` accordingly
-        * aws_email  
-        * project_name  
-        * project_key_name  
-        * db_name (optional)  
-        * db_username (optional NOTE: 'admin' cannot be used)  
     1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
         * Ensure current directory is `tcp-ecs`  
         * Estimated time for completion is: `00:02:15`  
     1. RUN: `docker run -it --rm -d --name tcp-ecs -v ~/.aws/credentials:/root/.aws/credentials tcp-ecs:latest`  [3.4]
         * Ensure current directory is tcp-ecs  
-        * Ensure ~/.aws/credentials default profile is set (MFA implications)  
+        * Ensure ~/.aws/credentials default profile is set (MFA implications)  (to check: `aws sts get-caller-identity` )
         * Follow progress with `docker logs tcp-ecs -f`  
         * Estimated time for completion is: `00:12:30`  
 1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
-    1. Update `sonar/terraform.tfvars` accordingly  
-        * `project_name` should match the same `project_name` value from tcp-ecs  
-        * `aws_region` should match the same `aws_region` value from tcp-ecs  
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
         * Estimated time for completion is: `00:01:30`  
@@ -96,9 +89,6 @@ Follow the below steps to deploy an environment into a clean account.
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
         * Estimated time for completion is: `00:20:00`  
 1. cd `../terraform-aws-jenkins-stack`  
-    1.Update `jenkins/terraform.tfvars` accordingly  
-        * `prefix` should match the same `project_name` value from tcp-ecs  
-        * `aws_region` should match the same `aws_region` value from tcp-ecs  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-app -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-app:latest`  
