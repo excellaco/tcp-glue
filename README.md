@@ -57,31 +57,28 @@ Follow the below steps to deploy an environment into a clean account.
      tcp-angular
      '
      ```
-1. Run: `./git-clone-all && cd tcp-ecs`
+1. RUN: `./git-clone-all` [3]
+    1. RUN: `./make-netrc && ./push-netrc`
+
+1. RUN: `cd tcp-ecs` [3b]
     1. Update `aws/terraform.tfvars` accordingly
         * aws_email  
         * project_name  
         * project_key_name  
         * db_name (optional)  
         * db_username (optional NOTE: 'admin' cannot be used)  
-    1. Update `.netrc` accordingly    
-        * Provide GitHub API Token as username  
-        * Leave password empty  
-    1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  
+    1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
         * Ensure current directory is `tcp-ecs`  
         * Estimated time for completion is: `00:02:15`  
-    1. RUN: `docker run -it --rm -d --name tcp-ecs -v ~/.aws/credentials:/root/.aws/credentials tcp-ecs:latest`  
+    1. RUN: `docker run -it --rm -d --name tcp-ecs -v ~/.aws/credentials:/root/.aws/credentials tcp-ecs:latest`  [3.4]
         * Ensure current directory is tcp-ecs  
         * Ensure ~/.aws/credentials default profile is set (MFA implications)  
         * Follow progress with `docker logs tcp-ecs -f`  
         * Estimated time for completion is: `00:12:30`  
-1. cd `../terraform-aws-sonar-ecs-fargate`  
+1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
     1. Update `sonar/terraform.tfvars` accordingly  
         * `project_name` should match the same `project_name` value from tcp-ecs  
         * `aws_region` should match the same `aws_region` value from tcp-ecs  
-    1. Update `.netrc` accordingly  
-        * Provide GitHub API Token as username  
-        * Leave password empty  
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
         * Estimated time for completion is: `00:01:30`  
@@ -89,7 +86,7 @@ Follow the below steps to deploy an environment into a clean account.
         * Follow progress with `docker logs tcp-sonar -f`  
         * Estimated time for completion is: `00:03:00`  
         * The "duplicate security group warning" can be ignored.  
-1. cd `../jenkins`  
+1. cd `../jenkins`  [5]
     1. Edit `packer/jenkins.json` accordingly  
         * `region` should match the same `aws_region` value from tcp-ecs  
                 * NOTE: The `source_ami` will need to be updated based on [ami_map](https://github.com/excellaco/jenkins#configuration-notes)  
