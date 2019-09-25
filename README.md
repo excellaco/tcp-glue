@@ -71,6 +71,12 @@ Follow the below steps to deploy an environment into a clean account.
         * Ensure ~/.aws/credentials default profile is set (MFA implications)  (to check: `aws sts get-caller-identity` )
         * Follow progress with `docker logs tcp-ecs -f`  
         * Estimated time for completion is: `00:12:30`  
+    1. Get the SSH key:
+        ```
+        docker cp tcp-ecs:/tcp-ecs/keys/ssh .
+        mv ssh/*.pub ssh/*.pem .
+        ```
+	This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
 1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
@@ -96,11 +102,6 @@ Follow the below steps to deploy an environment into a clean account.
         * Wait until the EC2 instance is registered and available through the load balancer.  
 
 ## Misc Notes on Deployment
-1. To acquire the pem file to ssh through bastion to any of the instances you'll need to run:  
-   ```
-   docker cp tcp-ecs:/tcp-ecs/keys/ssh .
-   mv ssh/*.pub ssh/*.pem .
-   ```
 1. Step 5 can be run first, and in parallel with steps 3.3/3.4 and 4.3/4.4 to save some time.  
 1. If you want to integrate Slack and Jenkins, please follow these [steps](https://medium.com/appgambit/integrating-jenkins-with-slack-notifications-4f14d1ce9c7a)  
 1. Steps to setup multibranch pipeline jobs can be found [here](https://github.com/excellaco/terraform-aws-jenkins-stack/wiki/Multibranch-Pipeline-Setup)  
