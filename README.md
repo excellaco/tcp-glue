@@ -46,17 +46,17 @@ Follow the below steps to deploy an environment into a clean account.
 
 1.  Clone TCP-GLUE and cd tcp-glue
 1.  Update the `.repos` file with the following:
-   ```
-   account='https://github.com/excellaco/'  
-   repos='
-   tcp-ecs
-   jenkins
-   terraform-aws-jenkins-stack
-   terraform-aws-sonar-ecs-fargate
-   tcp-java
-   tcp-angular
-   '
-   ```
+     ```
+     account='https://github.com/excellaco/'  
+     repos='
+     tcp-ecs
+     jenkins
+     terraform-aws-jenkins-stack
+     terraform-aws-sonar-ecs-fargate
+     tcp-java
+     tcp-angular
+     '
+     ```
 1. Run: `./git-clone-all && cd tcp-ecs`
     1. Update `aws/terraform.tfvars` accordingly
         * aws_email  
