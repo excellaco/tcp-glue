@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -eux
+
+# will set aws_email and aws_region variables:
+source glue.auto.tfvars
+
+echo "===INFO: aws_region: $aws_region"
+echo "===INFO: aws_email : $aws_email"
+
+# look up the source AMI:
+source_ami=$(grep "^| *${aws_region}.*|.*|" jenkins/README.md  | cut -d'|' -f3)
+source_ami=$(echo $source_ami)
+
+if [[ "x$source_ami" == "x" ]]; then
+   echo "===FATAL: could not find source AMI for region $aws_region"
+   exit 404
+fi
+
+echo "===INFO: source_ami : $source_ami"
+
+head -7 jenkins/packer/jenkins.json > jj.top
+tail -n +8 jenkins/packer/jenkins.json > jj.bottom
+
+sed -i -e 's/"region":.*/"region": "'$aws_region'",/' jj.top
+sed -i -e 's/"creator":.*/"creator": "'$aws_email'"/' jj.top
+sed -i -e 's/"source_ami":.*/"source_ami": "'$source_ami'"/' jj.top
+
+mv jenkins/packer/jenkins.json jenkins/packer/jenkins.json.orig
+cat jj.top > jenkins/packer/jenkins.json
+cat jj.bottom >> jenkins/packer/jenkins.json
+
+rm jj.top jj.bottom
+
+if (diff -q jenkins/packer/jenkins.json jenkins/packer/jenkins.json.orig); then
+   echo "===INFO: updated jenkins.json same as previously-existing file"
+fi

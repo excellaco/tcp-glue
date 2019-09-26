@@ -61,6 +61,8 @@ Follow the below steps to deploy an environment into a clean account.
     1. RUN: `./make-netrc && ./push-netrc`
     1. Fill out glue.auto.tfvars
     1. RUN: `./push-glue-auto-tfvars`
+    1. RUN: `./update-json-file`
+        * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
 1. RUN: `cd tcp-ecs` [3b]
     1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
@@ -86,10 +88,6 @@ Follow the below steps to deploy an environment into a clean account.
         * Estimated time for completion is: `00:03:00`  
         * The "duplicate security group warning" can be ignored.  
 1. cd `../jenkins`  [5]
-    1. Edit `packer/jenkins.json` accordingly  
-        * `region` should match the same `aws_region` value from tcp-ecs  
-                * NOTE: The `source_ami` will need to be updated based on [ami_map](https://github.com/excellaco/jenkins#configuration-notes)  
-        * ` creator`: your email address  
     1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:30`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
