@@ -78,7 +78,7 @@ Follow the below steps to deploy an environment into a clean account.
         docker cp tcp-ecs:/tcp-ecs/keys/ssh .
         mv ssh/*.pub ssh/*.pem .
         ```
-	This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
+        This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
 1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
@@ -92,15 +92,17 @@ Follow the below steps to deploy an environment into a clean account.
         * Estimated time for completion is: `00:02:30`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
         * Estimated time for completion is: `00:20:00`  
+        * Note the username and password for Jenkins, found near the beginning of the output
 1. cd `../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-app -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-app:latest`  
         * Estimated time for completion is: `00:05:00`  
-        * Wait until the EC2 instance is registered and available through the load balancer.  
+        * Note the app_elb_dns output: this is the URI to use for the Jenkins instance
+        * Wait until the EC2 instance is registered and available through the load balancer.  You can determine this by hitting the Jenkins instance in a browser, or by going to the AWS console and viewing the ELB (listed in the `app_elb_id` Terraform output).  It should take no more than a few minutes.
 
 ## Misc Notes on Deployment
-1. Step 5 can be run first, and in parallel with steps 3.3/3.4 and 4.3/4.4 to save some time.  
+1. Step 6 (`jenkins-ami`) can be run first, and in parallel with steps 4 (`tcp-ecs`) and 5 (`tcp-sonar`) to save some time.  
 1. If you want to integrate Slack and Jenkins, please follow these [steps](https://medium.com/appgambit/integrating-jenkins-with-slack-notifications-4f14d1ce9c7a)  
 1. Steps to setup multibranch pipeline jobs can be found [here](https://github.com/excellaco/terraform-aws-jenkins-stack/wiki/Multibranch-Pipeline-Setup)  
 
