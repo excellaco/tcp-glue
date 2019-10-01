@@ -1,10 +1,9 @@
-account='https://git.uscis.dhs.gov/USCIS/'
-
+account='https://github.com/excellaco/'  
 repos='
-tcp-ecs
-jenkins
-tcp-java
-tcp-angular
-tcp-react
-xg
-'
+   tcp-ecs
+   jenkins
+   terraform-aws-jenkins-stack
+   terraform-aws-sonar-ecs-fargate
+   tcp-java
+   tcp-angular
+   '
