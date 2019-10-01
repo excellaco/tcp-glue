@@ -1,9 +1,9 @@
-account='https://github.com/excellaco/'
+account='https://github.com/excellaco/'  
 repos='
-tcp-ecs
-jenkins
-terraform-aws-jenkins-stack
-terraform-aws-sonar-ecs-fargate
-tcp-java
-tcp-angular
-'
+   tcp-ecs
+   jenkins
+   terraform-aws-jenkins-stack
+   terraform-aws-sonar-ecs-fargate
+   tcp-java
+   tcp-angular
+   '
