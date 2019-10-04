@@ -82,7 +82,7 @@ Follow the below steps to deploy an environment into a clean account.
         This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
 
 1. Build the Sonar infrastructure:
-    1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
+    1. `cd ../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
         * Estimated time for completion is: `00:01:30`  
@@ -92,12 +92,12 @@ Follow the below steps to deploy an environment into a clean account.
         * The "duplicate security group warning" can be ignored.  
 
 1. Build the Jenkins AMI
-1. cd `../jenkins`  [5]
-    1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
-        * Estimated time for completion is: `00:02:30`  
-    1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
-        * Estimated time for completion is: `00:20:00`  
-        * Note the username and password for Jenkins, found near the beginning of the output
+      1. `cd ../jenkins`  [5]
+      1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
+          * Estimated time for completion is: `00:02:30`  
+      1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
+          * Estimated time for completion is: `00:20:00`  
+          * Note the username and password for Jenkins, found near the beginning of the output
 
 1. Build the Jenkins Infrastructure
     1. `cd ../terraform-aws-jenkins-stack`  
@@ -109,7 +109,7 @@ Follow the below steps to deploy an environment into a clean account.
         * Wait until the EC2 instance is registered and available through the load balancer.  You can determine this by hitting the Jenkins instance in a browser, or by going to the AWS console and viewing the ELB (listed in the `app_elb_id` Terraform output).  It should take no more than a few minutes.
 
 ## Misc Notes on Deployment
-1. Step 6 (`jenkins-ami`) can be run first, and in parallel with steps 4 (`tcp-ecs`) and 5 (`tcp-sonar`) to save some time.  
+1. The `jenkins-ami` section can be run in parallel with ECS and Sonar sections above it to save some time.  
 1. If you want to integrate Slack and Jenkins, please follow these [steps](https://medium.com/appgambit/integrating-jenkins-with-slack-notifications-4f14d1ce9c7a)  
 1. Steps to setup multibranch pipeline jobs can be found [here](https://github.com/excellaco/terraform-aws-jenkins-stack/wiki/Multibranch-Pipeline-Setup)  
 
@@ -122,12 +122,12 @@ We've leverage SSM parameters to store all vital information, including URIs, an
 
 Do destroy the entire stack follow the below steps. 
 
-1. Go into the container that has terraform, run: `./go-bash` 
-1. cd `terraform-aws-jenkins-stack`  
-1. RUN: `./bin/destroy_env` 
-1. cd `../terraform-aws-sonar-ecs-fargate`  
-1. RUN: `./bin/destroy_env`  
-1. cd `../tcp-ecs`  
-1. RUN: `./bin/destroy_env`    
-1. Stop all running tcp containers  
+1. Go into the container that has terraform by running: `./go-bash`, then run the following: [TODO: what happened to go-bash? Also name it go-container-bash]
+    1. `cd terraform-aws-jenkins-stack`  
+    1. `./bin/destroy_env` 
+    1. `cd ../terraform-aws-sonar-ecs-fargate`  
+    1. `./bin/destroy_env`  
+    1. `cd ../tcp-ecs`  
+    1. `./bin/destroy_env`    
+1. Stop all running tcp containers 
 1. Remove any tcp images  
