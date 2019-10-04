@@ -46,60 +46,6 @@ Follow the below steps to deploy an environment into a clean account.
 
 1.  Clone TCP-GLUE and cd tcp-glue
 1.  Update the `.repos` file with the following:
-<<<<<<< HEAD
-   ```
-   account='https://github.com/excellaco/'  
-   repos='
-   tcp-ecs
-   jenkins
-   terraform-aws-jenkins-stack
-   terraform-aws-sonar-ecs-fargate
-   tcp-java
-   tcp-angular
-   '
-   ```
-1. Run: `./git-clone-all && cd tcp-ecs`
-  1. Update `aws/terraform.tfvars` accordingly      
-    * aws_email  
-    * project_name  # this will prefix AWS resources
-    * project_key_name  
-    * db_name (optional)  
-    * db_username (optional NOTE: 'admin' cannot be used)  
-  x1. Update `.netrc` accordingly  
-    * Provide GitHub API Token as username for access to the GitHub repos
-    * Leave password empty  
-  1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  
-    * Ensure current directory is `tcp-ecs`  
-    * Estimated time for completion is: `00:02:15`  
-  1. RUN: `docker run -it --rm -d --name tcp-ecs -v ~/.aws/credentials:/root/.aws/credentials tcp-ecs:latest`  
-    * Ensure current directory is tcp-ecs  
-    * Ensure ~/.aws/credentials default profile is set (MFA implications)  
-    * Follow progress with `docker logs tcp-ecs -f`  
-    * Estimated time for completion is: `00:12:30`  
-1. cd `../terraform-aws-sonar-ecs-fargate`  
-  1. Update `sonar/terraform.tfvars` accordingly  
-    * `project_name` should match the same `project_name` value from tcp-ecs  
-    * `aws_region` should match the same `aws_region` value from tcp-ecs  
-  1. Update `.netrc` accordingly  
-    * Provide GitHub API Token as username  
-    * Leave password empty  
-  1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
-    * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
-    * Estimated time for completion is: `00:01:30`  
-  1. RUN: `docker run -it --rm -d --name tcp-sonar -v ~/.aws/credentials:/root/.aws/credentials tcp-sonar:latest`  
-    * Follow progress with `docker logs tcp-sonar -f`  
-    * Estimated time for completion is: `00:03:00`  
-    * The "duplicate security group warning" can be ignored.  
-1. cd `../jenkins`  
-  1. Edit `packer/jenkins.json` accordingly  
-    * `region` should match the same `aws_region` value from tcp-ecs  
-        * NOTE: The `source_ami` will need to be updated based on [ami_map](https://github.com/excellaco/jenkins#configuration-notes)  
-    * ` creator`: your email address  
-  1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
-    * Estimated time for completion is: `00:02:30`  
-  1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
-    * Estimated time for completion is: `00:20:00`  
-=======
      ```
      account='https://github.com/excellaco/'  
      repos='
@@ -147,7 +93,6 @@ Follow the below steps to deploy an environment into a clean account.
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
         * Estimated time for completion is: `00:20:00`  
         * Note the username and password for Jenkins, found near the beginning of the output
->>>>>>> master
 1. cd `../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
