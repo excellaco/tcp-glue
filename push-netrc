@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cp -p .netrc tcp-ecs
+cp -p .netrc terraform-aws-sonar-ecs-fargate
+cp -p .netrc terraform-aws-jenkins-stack
+
+find . -name .netrc -ls

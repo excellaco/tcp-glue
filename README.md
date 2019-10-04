@@ -46,75 +46,63 @@ Follow the below steps to deploy an environment into a clean account.
 
 1.  Clone TCP-GLUE and cd tcp-glue
 1.  Update the `.repos` file with the following:
-   ```
-   account='https://github.com/excellaco/'  
-   repos='
-   tcp-ecs
-   jenkins
-   terraform-aws-jenkins-stack
-   terraform-aws-sonar-ecs-fargate
-   tcp-java
-   tcp-angular
-   '
-   ```
-1. Run: `./git-clone-all && cd tcp-ecs`
-  1. Update `aws/terraform.tfvars` accordingly      
-    * aws_email  
-    * project_name  
-    * project_key_name  
-    * db_name (optional)  
-    * db_username (optional NOTE: 'admin' cannot be used)  
-  1. Update `.netrc` accordingly  
-    * Provide GitHub API Token as username  
-    * Leave password empty  
-  1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  
-    * Ensure current directory is `tcp-ecs`  
-    * Estimated time for completion is: `00:02:15`  
-  1. RUN: `docker run -it --rm -d --name tcp-ecs -v ~/.aws/credentials:/root/.aws/credentials tcp-ecs:latest`  
-    * Ensure current directory is tcp-ecs  
-    * Ensure ~/.aws/credentials default profile is set (MFA implications)  
-    * Follow progress with `docker logs tcp-ecs -f`  
-    * Estimated time for completion is: `00:12:30`  
-1. cd `../terraform-aws-sonar-ecs-fargate`  
-  1. Update `sonar/terraform.tfvars` accordingly  
-    * `project_name` should match the same `project_name` value from tcp-ecs  
-    * `aws_region` should match the same `aws_region` value from tcp-ecs  
-  1. Update `.netrc` accordingly  
-    * Provide GitHub API Token as username  
-    * Leave password empty  
-  1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
-    * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
-    * Estimated time for completion is: `00:01:30`  
-  1. RUN: `docker run -it --rm -d --name tcp-sonar -v ~/.aws/credentials:/root/.aws/credentials tcp-sonar:latest`  
-    * Follow progress with `docker logs tcp-sonar -f`  
-    * Estimated time for completion is: `00:03:00`  
-    * The "duplicate security group warning" can be ignored.  
-1. cd `../jenkins`  
-  1. Edit `packer/jenkins.json` accordingly  
-    * `region` should match the same `aws_region` value from tcp-ecs  
-        * NOTE: The `source_ami` will need to be updated based on [ami_map](https://github.com/excellaco/jenkins#configuration-notes)  
-    * ` creator`: your email address  
-  1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
-    * Estimated time for completion is: `00:02:30`  
-  1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
-    * Estimated time for completion is: `00:20:00`  
+     ```
+     account='https://github.com/excellaco/'  
+     repos='
+     tcp-ecs
+     jenkins
+     terraform-aws-jenkins-stack
+     terraform-aws-sonar-ecs-fargate
+     tcp-java
+     tcp-angular
+     '
+     ```
+1. RUN: `./git-clone-all` [3]
+    1. RUN: `./make-netrc && ./push-netrc`
+    1. Fill out glue.auto.tfvars
+    1. RUN: `./push-glue-auto-tfvars`
+    1. RUN: `./update-json-file`
+        * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
+
+1. RUN: `cd tcp-ecs` [3b]
+    1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
+        * Ensure current directory is `tcp-ecs`  
+        * Estimated time for completion is: `00:02:15`  
+    1. RUN: `docker run -it --rm -d --name tcp-ecs -v ~/.aws/credentials:/root/.aws/credentials tcp-ecs:latest`  [3.4]
+        * Ensure current directory is tcp-ecs  
+        * Ensure ~/.aws/credentials default profile is set (MFA implications)  (to check: `aws sts get-caller-identity` )
+        * Follow progress with `docker logs tcp-ecs -f`  
+        * Estimated time for completion is: `00:12:30`  
+    1. Get the SSH key:
+        ```
+        docker cp tcp-ecs:/tcp-ecs/keys/ssh .
+        mv ssh/*.pub ssh/*.pem .
+        ```
+        This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
+1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
+    1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
+        * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
+        * Estimated time for completion is: `00:01:30`  
+    1. RUN: `docker run -it --rm -d --name tcp-sonar -v ~/.aws/credentials:/root/.aws/credentials tcp-sonar:latest`  
+        * Follow progress with `docker logs tcp-sonar -f`  
+        * Estimated time for completion is: `00:03:00`  
+        * The "duplicate security group warning" can be ignored.  
+1. cd `../jenkins`  [5]
+    1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
+        * Estimated time for completion is: `00:02:30`  
+    1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
+        * Estimated time for completion is: `00:20:00`  
+        * Note the username and password for Jenkins, found near the beginning of the output
 1. cd `../terraform-aws-jenkins-stack`  
-  1.Update `jenkins/terraform.tfvars` accordingly  
-    * `prefix` should match the same `project_name` value from tcp-ecs  
-    * `aws_region` should match the same `aws_region` value from tcp-ecs  
-  1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
-    * Estimated time for completion is: `00:02:00`  
-  1. RUN: `docker run -it --rm -d --name tcp-jenkins-app -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-app:latest`  
-    * Estimated time for completion is: `00:05:00`  
-    * Wait until the EC2 instance is registered and available through the load balancer.  
+    1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
+        * Estimated time for completion is: `00:02:00`  
+    1. RUN: `docker run -it --rm -d --name tcp-jenkins-app -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-app:latest`  
+        * Estimated time for completion is: `00:05:00`  
+        * Note the app_elb_dns output: this is the URI to use for the Jenkins instance
+        * Wait until the EC2 instance is registered and available through the load balancer.  You can determine this by hitting the Jenkins instance in a browser, or by going to the AWS console and viewing the ELB (listed in the `app_elb_id` Terraform output).  It should take no more than a few minutes.
 
 ## Misc Notes on Deployment
-1. To acquire the pem file to ssh through bastion to any of the instances you'll need to run:  
-   ```
-   docker cp tcp-ecs:/tcp-ecs/keys/ssh .
-   mv ssh/*.pub ssh/*.pem .
-   ```
-1. Step 5 can be run first, and in parallel with steps 3.3/3.4 and 4.3/4.4 to save some time.  
+1. Step 6 (`jenkins-ami`) can be run first, and in parallel with steps 4 (`tcp-ecs`) and 5 (`tcp-sonar`) to save some time.  
 1. If you want to integrate Slack and Jenkins, please follow these [steps](https://medium.com/appgambit/integrating-jenkins-with-slack-notifications-4f14d1ce9c7a)  
 1. Steps to setup multibranch pipeline jobs can be found [here](https://github.com/excellaco/terraform-aws-jenkins-stack/wiki/Multibranch-Pipeline-Setup)  
 
