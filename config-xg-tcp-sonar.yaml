@@ -1,11 +1,11 @@
-# Config placeholder
+# Config template - all []' require filling in (and removing the []'s)
 projectName: [CHANGE ME]
 templateRepo:
-  remote: git@github.com:excellaco/[CHANGE ME].git
+  remote: git@github.com:excellaco/terraform-aws-sonar-ecs-fargate.git
   refName: master
 
 variables:
-  aws_region: us-east-2
-  project_name: [CHANGE ME]
+  aws_region: [us-east-2]
+  project_name: [CHANGE_ME]
   environment: dev
   

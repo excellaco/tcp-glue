@@ -1,3 +1,4 @@
+# Config template - all []' require filling in (and removing the []'s)
 projectName: [project directory which will be created]
 templateRepo:
   remote: git@github.com:excellaco/tcp-ecs.git
