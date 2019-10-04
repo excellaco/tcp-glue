@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#### Clones all repos underneath this directoey ####
+
 . .repos
 
 for repo in $repos;

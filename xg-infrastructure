@@ -1,0 +1,13 @@
+
+CONTAINER_NAME=tcp-runner
+docker build -t $CONTAINER_NAME:latest -f Docker/Dockerfile .
+
+docker run -entrypoint ./ -it --rm -d --name $CONTAINER_NAME -v ~/.aws/credentials:/root/.aws/credentials -v $(pwd):/tcp $CONTAINER_NAME:latest
+
+
+cd tcp-ecs
+./go
+cd ..
+
+cd terraform-aws-jenkins-stack
+./go

@@ -16,3 +16,6 @@ jenkins/
 xg/
 terraform-aws-jenkins-stack/
 terraform-aws-sonar-ecs-fargate/
+
+xg*.yaml
+test-*

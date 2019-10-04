@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#### Pulls from all repos underneath this directoey ####
+
 . .repos
 
 BASE_DIR=$(pwd)

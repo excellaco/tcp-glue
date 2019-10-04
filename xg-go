@@ -1,0 +1,7 @@
+#!/bin/sh
+
+./xg make xg-tcp-ecs.yaml
+
+./xg make xg-tcp-jenkins.yaml
+
+./xg make xg-tcp-sonar.yaml

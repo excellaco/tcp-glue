@@ -60,12 +60,12 @@ Follow the below steps to deploy an environment into a clean account.
 1. Run: `./git-clone-all && cd tcp-ecs`
   1. Update `aws/terraform.tfvars` accordingly      
     * aws_email  
-    * project_name  
+    * project_name  # this will prefix AWS resources
     * project_key_name  
     * db_name (optional)  
     * db_username (optional NOTE: 'admin' cannot be used)  
-  1. Update `.netrc` accordingly  
-    * Provide GitHub API Token as username  
+  x1. Update `.netrc` accordingly  
+    * Provide GitHub API Token as username for access to the GitHub repos
     * Leave password empty  
   1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  
     * Ensure current directory is `tcp-ecs`  
@@ -124,9 +124,12 @@ We've leverage SSM parameters to store all vital information, including URIs, an
 ![SSM Params](./images/ssm_params.png "Sample SSM Parameters")
 
 # End-to-End Destroy Process
-Do destroy the entire stack follow the below steps.  
+
+Do destroy the entire stack follow the below steps. 
+
+1. Go into the container that has terraform, run: `./go-bash` 
 1. cd `terraform-aws-jenkins-stack`  
-1. RUN: `./bin/destroy_env`  
+1. RUN: `./bin/destroy_env` 
 1. cd `../terraform-aws-sonar-ecs-fargate`  
 1. RUN: `./bin/destroy_env`  
 1. cd `../tcp-ecs`  
