@@ -44,7 +44,7 @@ Memory: 4 Gb
 # End-to-End Deployment Process
 Follow the below steps to deploy an environment into a clean account.
 
-1.  Clone TCP-GLUE and cd tcp-glue
+1.  Clone and cd into excellaco/tcp-glue
 1.  Update the `.repos` file with the following:
      ```
      account='https://github.com/excellaco/'  
@@ -57,10 +57,10 @@ Follow the below steps to deploy an environment into a clean account.
      tcp-angular
      '
      ```
-1. RUN: `./git-clone-all` [3]
-    1. RUN: `./make-netrc && ./push-netrc`
-    1. Fill out glue.auto.tfvars
-    1. RUN: `./push-glue-auto-tfvars`
+1. RUN: `./git-clone-all` [3] [TODO: change to filling out xg config files and running xg to do this will config filled in]
+    1. [TODO: Remove, xg handling] RUN: `./make-netrc && ./push-netrc`
+    1. [TODO: Remove, xg handling? Maybe xg should fill this file so we have a reusable terraform vars file] Fill out glue.auto.tfvars
+    1. RUN: `./push-glue-auto-tfvars` # this will prefix AWS resources
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
