@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# convert from template to actual config file (which will then be git ignored)
+mv config-xg-tcp-ecs.yaml xg-tcp-ecs.yaml
+mv config-xg-tcp-jenkins.yaml xg-tcp-jenkins.yaml
+mv config-xg-tcp-sonar.yaml xg-tcp-sonar.yaml
+
 ./xg make xg-tcp-ecs.yaml
 
 ./xg make xg-tcp-jenkins.yaml

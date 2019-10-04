@@ -5,6 +5,7 @@ templateRepo:
   refName: master
 
 variables:
+  github_token: [A token with access to your repos]
   aws_region: [us-east-2]
   project_name: [CHANGE_ME]
   environment: dev

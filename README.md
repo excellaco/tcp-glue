@@ -44,7 +44,7 @@ Memory: 4 Gb
 # End-to-End Deployment Process
 Follow the below steps to deploy an environment into a clean account.
 
-1.  Clone and cd into excellaco/tcp-glue
+1.  Clone https://github.com/excellaco/tcp-glue then `cd tcp-glue`
 1.  Update the `.repos` file with the following:
      ```
      account='https://github.com/excellaco/'  
@@ -57,14 +57,15 @@ Follow the below steps to deploy an environment into a clean account.
      tcp-angular
      '
      ```
-1. RUN: `./git-clone-all` [3] [TODO: change to filling out xg config files and running xg to do this will config filled in]
-    1. [TODO: Remove, xg handling] RUN: `./make-netrc && ./push-netrc`
-    1. [TODO: Remove, xg handling? Maybe xg should fill this file so we have a reusable terraform vars file] Fill out glue.auto.tfvars
-    1. RUN: `./push-glue-auto-tfvars` # this will prefix AWS resources
-    1. RUN: `./update-json-file`
+1. Generate the tcp repos with configuration you fill out:
+    1. Fill out all xg configuration files - they are prefixed with `config-`. There is one for ecah tcp repo to be configured and generated.
+    1. Execute xg against those config files by running `./xg-go`. The repos should be generated under tcp-glue.
+    1. RUN: `./push-glue-auto-tfvars` # this will prefix AWS resources [TODO: Remove, xg handling? Maybe xg should fill this file so we have a reusable terraform vars file] Fill out glue.auto.tfvars
+    1. [TODO: add to xg process] RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
-1. RUN: `cd tcp-ecs` [3b]
+1. Build the ECS infrastructure:
+    1. RUN: `cd tcp-ecs` [3b]
     1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
         * Ensure current directory is `tcp-ecs`  
         * Estimated time for completion is: `00:02:15`  
@@ -79,7 +80,9 @@ Follow the below steps to deploy an environment into a clean account.
         mv ssh/*.pub ssh/*.pem .
         ```
         This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
-1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
+
+1. Build the Sonar infrastructure:
+    1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
         * Estimated time for completion is: `00:01:30`  
@@ -87,13 +90,17 @@ Follow the below steps to deploy an environment into a clean account.
         * Follow progress with `docker logs tcp-sonar -f`  
         * Estimated time for completion is: `00:03:00`  
         * The "duplicate security group warning" can be ignored.  
+
+1. Build the Jenkins AMI
 1. cd `../jenkins`  [5]
     1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:30`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
         * Estimated time for completion is: `00:20:00`  
         * Note the username and password for Jenkins, found near the beginning of the output
-1. cd `../terraform-aws-jenkins-stack`  
+
+1. Build the Jenkins Infrastructure
+    1. `cd ../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-app -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-app:latest`  
