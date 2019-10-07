@@ -81,6 +81,9 @@ Follow the below steps to deploy an environment into a clean account.
         ```
         This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
 
+1. [TODO: use script to run the 3 infrastructure sections below then clean up - they all build and run a container to do it]
+    1. Run `./xg-infrastructure` [TODO: WIP]
+
 1. Build the Sonar infrastructure:
     1. `cd ../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
@@ -122,7 +125,7 @@ We've leverage SSM parameters to store all vital information, including URIs, an
 
 Do destroy the entire stack follow the below steps. 
 
-1. Go into the container that has terraform by running: `./go-bash`, then run the following: [TODO: what happened to go-bash? Also name it go-container-bash]
+1. Go into the container that has terraform by running: `./go-conatiner-bash`, then run the following: [TODO: what happened to go-bash? Also name it go-container-bash]
     1. `cd terraform-aws-jenkins-stack`  
     1. `./bin/destroy_env` 
     1. `cd ../terraform-aws-sonar-ecs-fargate`  
