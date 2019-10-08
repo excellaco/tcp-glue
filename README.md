@@ -123,14 +123,17 @@ We've leverage SSM parameters to store all vital information, including URIs, an
 
 # End-to-End Destroy Process
 
-Do destroy the entire stack follow the below steps. 
+To destroy the entire stack follow the below steps. 
 
-1. Go into the container that has terraform by running: `./go-conatiner-bash`, then run the following: [TODO: what happened to go-bash? Also name it go-container-bash]
-    1. `cd terraform-aws-jenkins-stack`  
-    1. `./bin/destroy_env` 
-    1. `cd ../terraform-aws-sonar-ecs-fargate`  
-    1. `./bin/destroy_env`  
-    1. `cd ../tcp-ecs`  
-    1. `./bin/destroy_env`    
+1. Go into the `tcp-ecs` directory and run: `./go-conatiner-bash`. 
+
+You should be in the container's bash. Do the following:
+
+1. `cd terraform-aws-jenkins-stack`  
+1. `./bin/destroy_env` 
+1. `cd ../terraform-aws-sonar-ecs-fargate`  
+1. `./bin/destroy_env`  
+1. `cd ../tcp-ecs`  
+1. `./bin/destroy_env`    
 1. Stop all running tcp containers 
 1. Remove any tcp images  
