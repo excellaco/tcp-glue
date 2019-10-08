@@ -26,6 +26,11 @@ Follow the below steps to deploy the following into a clean account. This will b
 * Jenkins AMI & EC2 instance
 * Sonar instance
 
+## Setup
+
+* Install Docker
+* TODO
+
 1.  Clone and cd into https://github.com/excellaco/tcp-glue
 1. RUN: `./git-clone-all` [3]
     1. RUN: `./make-netrc && ./push-netrc`
