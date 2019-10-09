@@ -48,7 +48,6 @@ There are some required configurations and setup that must be completed before r
         aws_access_key_id = ASIARKL72BPXXXXXXXXXXXX
         aws_secret_access_key = LqDp3fFerc6NeDYe2wRXXXXXXXXXX
         aws_session_token = FQoGZXIvYXdzEM///////////XXXXXXXXXXX
-        aws_security_token = FQoGZXIvYXdzEM///////////XXXXXXXXXXX
         region = us-east-1
         output = json
         ```
@@ -70,6 +69,14 @@ Follow the below steps to deploy the following into a clean account. This will b
     1. RUN: `./push-glue-auto-tfvars`
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
+
+1. cd `../jenkins`  [5]
+    1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
+      * Estimated time for completion is: `00:02:30`  
+    1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
+      * Estimated time for completion is: `00:20:00`  
+      * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
+                * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
 
 1. RUN: `cd tcp-ecs` [3b]
     1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
@@ -94,12 +101,6 @@ Follow the below steps to deploy the following into a clean account. This will b
         * Follow progress with `docker logs tcp-sonar -f`  
         * Estimated time for completion is: `00:03:00`  
         * The "duplicate security group warning" can be ignored.  
-1. cd `../jenkins`  [5]
-    1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
-        * Estimated time for completion is: `00:02:30`  
-    1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
-        * Estimated time for completion is: `00:20:00`  
-        * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
 1. cd `../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
@@ -108,12 +109,11 @@ Follow the below steps to deploy the following into a clean account. This will b
         * Note the app_elb_dns output: this is the URI to use for the Jenkins instance
         * Wait until the EC2 instance is registered and available through the load balancer.  You can determine this by hitting the Jenkins instance in a browser, or by going to the AWS console and viewing the ELB (listed in the `app_elb_id` Terraform output).  It should take no more than a few minutes.
 
-## Misc Notes on Deployment
-1. Step 6 (`jenkins-ami`) can be run first, and in parallel with steps 4 (`tcp-ecs`) and 5 (`tcp-sonar`) to save some time.  
+#### Misc Notes on Deployment
 1. If you want to integrate Slack and Jenkins, please follow these [steps](https://medium.com/appgambit/integrating-jenkins-with-slack-notifications-4f14d1ce9c7a)  
 1. Steps to setup multibranch pipeline jobs can be found [here](https://github.com/excellaco/terraform-aws-jenkins-stack/wiki/Multibranch-Pipeline-Setup)  
 
-## Accessing information
+#### Accessing information
 We've leverage SSM parameters to store all vital information, including URIs, and verious credentials.  If you have a question like "What's the Sonar URL?", or "What's the Jenkins Login/Password?", check the SSM parameters in the AWS account.
 
 Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribute"`
@@ -124,7 +124,9 @@ Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribut
 
 ![SSM Params](./images/ssm_params.png "Sample SSM Parameters")
 
-## Teardown
+### Part 3: Application Deployment
+
+### Part 4: Teardown
 
 Do destroy the entire stack follow the below steps.  
 1. cd `terraform-aws-jenkins-stack`  
