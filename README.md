@@ -99,7 +99,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         * Estimated time for completion is: `00:02:30`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
         * Estimated time for completion is: `00:20:00`  
-        * Note the username and password for Jenkins, found near the beginning of the output
+        * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
 1. cd `../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
@@ -115,6 +115,12 @@ Follow the below steps to deploy the following into a clean account. This will b
 
 ## Accessing information
 We've leverage SSM parameters to store all vital information, including URIs, and verious credentials.  If you have a question like "What's the Sonar URL?", or "What's the Jenkins Login/Password?", check the SSM parameters in the AWS account.
+
+Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribute"`
+  * The env path is only used when applicable
+  * In the below references, the jenkins password for the tst00 project can be found at: `/tst00/jenkins/pass`
+  * In the below references, the Development ECS Cluster ID can be found at: `/tst00/dev/cluser/id`
+
 
 ![SSM Params](./images/ssm_params.png "Sample SSM Parameters")
 
