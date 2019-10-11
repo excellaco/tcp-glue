@@ -1,0 +1,18 @@
+#!/bin/bash
+set -x
+
+#### Sets remotes for the generated repos to their generated name
+
+git remote remove origin # for Glue
+
+. .repos
+
+BASE_DIR=$(pwd)
+ACCOUNT='https://github.com/excellaco/'  
+
+for repo in $repos;
+do
+  cd $BASE_DIR/$repo
+  git remote add origin $ACCOUNT/$repo
+  cd ..
+done

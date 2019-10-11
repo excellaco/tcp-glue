@@ -1,9 +1,8 @@
 account='https://github.com/excellaco/'  
 repos='
    test-xg-tcp-ecs
-   test-xg-jenkins-ami
-   test-xg-jenkins
-   test-xg-sonar
+   test-xg-tcp-jenkins-ami
+   test-xg-tcp-jenkins
    test-xg-tcp-java
    test-xg-tcp-angular
    '

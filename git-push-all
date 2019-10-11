@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#### #### Initial commit and push for the generated repos
+
+. .repos
+
+BASE_DIR=$(pwd)
+ACCOUNT='https://github.com/excellaco/'  
+
+for repo in $repos;
+do
+  cd $BASE_DIR/$repo
+
+  git commit -am "Initial"
+  git push origin master
+done

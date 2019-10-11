@@ -1,0 +1,25 @@
+projectName: <ENTER>-tcp-ecs
+templateRepo:
+  remote: git@github.com:excellaco/tcp-ecs.git
+  refName: master
+
+variables:
+  github_token: <ENTER>
+  aws_access_key: <ENTER>
+  aws_secret_key: <ENTER>
+  aws_region: us-east-2
+  aws_email: <ENTER>
+  
+  # only alpha-numeric and dashes allowed
+  project_name: <ENTER-SAME-PROJECT-NANE>
+  environment: dev
+  
+  # needs to be unique per region
+  #project_key_name: project_ENVIRONMENT_ssh_key_pair_YOURNAME
+  project_key_name: <ENTER-SAME-PROJECT-NAME>_dev_ssh_key_pair
+  
+  # Used for application database
+  db_name: <ENTER> #alpha-numeric
+  db_username: <ENTER> #alpha-numeric
+  db_password: <ENTER> #>8 characters
+  db_identifier: <ENTER> #lowercase, alpha-numeric

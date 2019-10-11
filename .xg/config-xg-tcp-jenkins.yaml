@@ -1,0 +1,11 @@
+projectName: <ENTER>-tcp-jenkins
+templateRepo:
+  remote: git@github.com:excellaco/terraform-aws-jenkins-stack.git
+  refName: master
+
+variables:
+  github_token: <ENTER>
+  aws_region: us-east-2
+  project_name: <ENTER-SAME-PROJECT-NANE> # used as prefix in jenkins terraform
+  environment: dev
+  

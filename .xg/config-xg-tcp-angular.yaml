@@ -1,0 +1,7 @@
+projectName: <ENTER>-tcp-angular
+templateRepo:
+  remote: git@github.com:excellaco/tcp-angular.git
+  refName: master
+
+variables:
+  

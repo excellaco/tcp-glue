@@ -1,0 +1,9 @@
+projectName: <ENTER>-tcp-jenkins-ami
+templateRepo:
+  remote: git@github.com:excellaco/jenkins.git
+  refName: master
+
+variables:
+  aws_region: us-east-2
+  aws_email: <ENTER>
+  source_ami: ami-05c1fa8df71875112 # Lookup for other regions at https://github.com/excellaco/jenkins#Configuration-Notes

@@ -77,13 +77,13 @@ Follow the below steps to deploy the following into a clean account. This will b
     1. RUN: `./xg-go` to clone and configure the repos
     
 1. Create GitHub repos for each of the newly created repos
-    1. Create repos in Github manually & 
+    1. Create repos in Github manually
     1. Push the newly created local repos to them
         * **(Experimental)**
         1. Update each name in the `.repos` so it has the repo names
-        1. Update the remotes for each repo and push by running `./git-push-all`
+        1. Update the remotes for each repo and push by running `./git-set-remotes && ./git-push-all`
 
-        * **(Experimental)** Use [xg publish](https://github.com/excellaco/xg/#publish) instead
+    * **(Experimental)** Use [xg publish](https://github.com/excellaco/xg/#publish) instead
 
 1. Build the Jenkins AMI
     1. cd `../jenkins`  [5]
@@ -93,7 +93,7 @@ Follow the below steps to deploy the following into a clean account. This will b
       * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
                 * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
 
-1. Build the ECS infrastructure
+1. Build the ECS infrastructure via Terraform
     1. RUN: `cd tcp-ecs` [3b]
     1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
         * Ensure current directory is `tcp-ecs`  
@@ -110,7 +110,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         ```
         This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
 
-1. Build the Sonar infrastructure
+1. Build the Sonar infrastructure in ECS via Terraform
     1. `cd ../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
@@ -120,7 +120,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         * Estimated time for completion is: `00:03:00`  
         * The "duplicate security group warning" can be ignored.  
 
-1. Build the Jenkins Infrastructure
+1. Build the Jenkins Infrastructure via Terraform
     1. `cd ../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
