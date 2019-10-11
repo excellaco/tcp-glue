@@ -59,26 +59,42 @@ There are some required configurations and setup that must be completed before r
 Follow the below steps to deploy the following into a clean account. This will be the foundation. Then you will set up Jenkins pipelines to deploy an app into ECS:
 
 * AWS ECS cluster
-* Jenkins AMI & EC2 instance
+* Jenkins AMI & instance
 * Sonar instance
 
-1.  Clone and cd into https://github.com/excellaco/tcp-glue
-1. RUN: `./git-clone-all` [3]
+1. Generate and configure repos (default includes front-end, API, IaC for Jenkins and ECS)
+    1. Fork, clone and cd into https://github.com/excellaco/tcp-glue
+    1. RUN: `./git-clone-all` [3]
     1. RUN: `./make-netrc && ./push-netrc`
     1. Fill out glue.auto.tfvars
     1. RUN: `./push-glue-auto-tfvars`
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
-1. cd `../jenkins`  [5]
-    1. RUN: `docker build -t tcp-jenkins-ami:latest -f Docker/Dockerfile .`  
-      * Estimated time for completion is: `00:02:30`  
-    1. RUN: `docker run -it --rm -d --name tcp-jenkins-ami -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-ami:latest`  
-      * Estimated time for completion is: `00:20:00`  
+* **(Experimental)** To use xg for the above, do the following: 
+
+    1. Fill out `config-tcp-*.yaml files`. There is one for each service. `projectName` will be the name of the respective repo.
+    1. RUN: `./xg-go` to clone and configure the repos
+    
+1. Create GitHub repos for each of the newly created repos
+    1. Create repos in Github manually
+    1. Push the newly created local repos to them
+        * **(Experimental)**
+        1. Update each name in the `.repos` so it has the repo names
+        1. Update the remotes for each repo and push by running `./git-set-remotes && ./git-push-all`
+
+    * **(Experimental)** Use [xg publish](https://github.com/excellaco/xg/#publish) instead
+
+1. Build the Jenkins AMI
+    1. cd `../jenkins`  [5]
+    1. RUN: `./go`
+      
+      * Estimated time for completion is: `00:22:30`  
       * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
                 * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
 
-1. RUN: `cd tcp-ecs` [3b]
+1. Build the ECS infrastructure via Terraform
+    1. RUN: `cd tcp-ecs` [3b]
     1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
         * Ensure current directory is `tcp-ecs`  
         * Estimated time for completion is: `00:02:15`  
@@ -93,7 +109,9 @@ Follow the below steps to deploy the following into a clean account. This will b
         mv ssh/*.pub ssh/*.pem .
         ```
         This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
-1. cd `../terraform-aws-sonar-ecs-fargate`  [4]
+
+1. Build the Sonar infrastructure in ECS via Terraform
+    1. `cd ../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
         * Estimated time for completion is: `00:01:30`  
@@ -101,7 +119,9 @@ Follow the below steps to deploy the following into a clean account. This will b
         * Follow progress with `docker logs tcp-sonar -f`  
         * Estimated time for completion is: `00:03:00`  
         * The "duplicate security group warning" can be ignored.  
-1. cd `../terraform-aws-jenkins-stack`  
+
+1. Build the Jenkins Infrastructure via Terraform
+    1. `cd ../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
     1. RUN: `docker run -it --rm -d --name tcp-jenkins-app -v ~/.aws/credentials:/root/.aws/credentials tcp-jenkins-app:latest`  
@@ -128,14 +148,19 @@ Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribut
 
 ### Part 4: Teardown
 
-Do destroy the entire stack follow the below steps.  
-1. cd `terraform-aws-jenkins-stack`  
-1. RUN: `./bin/destroy_env`  
-1. cd `../terraform-aws-sonar-ecs-fargate`  
-1. RUN: `./bin/destroy_env`  
-1. cd `../tcp-ecs`  
-1. RUN: `./bin/destroy_env`    
-1. Stop all running tcp containers  
+To destroy the entire stack follow the below steps. 
+
+1. Go into the `tcp-ecs` directory and run: `./go-conatiner-bash`. 
+
+You should be in the container's bash. Do the following:
+
+1. `cd terraform-aws-jenkins-stack`  
+1. `./bin/destroy_env` 
+1. `cd ../terraform-aws-sonar-ecs-fargate`  
+1. `./bin/destroy_env`  
+1. `cd ../tcp-ecs`  
+1. `./bin/destroy_env`    
+1. Stop all running tcp containers 
 1. Remove any tcp images  
 
 # Using Glue for local development

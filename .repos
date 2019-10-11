@@ -1,9 +1,8 @@
 account='https://github.com/excellaco/'  
 repos='
-   tcp-ecs
-   jenkins
-   terraform-aws-jenkins-stack
-   terraform-aws-sonar-ecs-fargate
-   tcp-java
-   tcp-angular
+   test-xg-tcp-ecs
+   test-xg-tcp-jenkins-ami
+   test-xg-tcp-jenkins
+   test-xg-tcp-java
+   test-xg-tcp-angular
    '

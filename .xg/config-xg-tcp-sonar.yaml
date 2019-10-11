@@ -1,0 +1,4 @@
+projectName: <ENTER>-tcp-sonar
+templateRepo:
+  remote: git@github.com:excellaco/terraform-aws-sonar-ecs-fargate.git
+  refName: master

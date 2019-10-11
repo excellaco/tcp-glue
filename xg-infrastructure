@@ -1,0 +1,21 @@
+# TODO: WIP. Don't use this.
+
+## attempting to use one container to run all terraform... maybe later
+#CONTAINER_NAME=tcp-runner
+#docker build -t $CONTAINER_NAME:latest -f Docker/Dockerfile .
+
+#docker run -entrypoint ./ -it --rm -d --name $CONTAINER_NAME -v ~/.aws/credentials:/root/.aws/credentials -v $(pwd):/tcp $CONTAINER_NAME:latest
+
+
+
+# Convention is for tcp repo to provide a go file that glue will call to run its container and commands within
+
+cd tcp-ecs
+./go
+cd ..
+
+cd terraform-aws-jenkins-stack
+./go
+
+cd terraform-aws-sonar-ecs-fargate
+./go
