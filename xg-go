@@ -1,17 +1,17 @@
 #!/bin/sh
 
+XG_FILE_PATH=.xg/
+
 # convert from template to actual config file (which will then be git ignored)
 mv config-xg-tcp-ecs.yaml xg-tcp-ecs.yaml
 mv config-xg-tcp-jenkins.yaml xg-tcp-jenkins.yaml
 mv config-xg-tcp-sonar.yaml xg-tcp-sonar.yaml
-
 # mv xg-tcp-ecs.yaml config-xg-tcp-ecs.yaml 
 # mv xg-tcp-jenkins.yaml config-xg-tcp-jenkins.yaml 
 # mv xg-tcp-sonar.yaml config-xg-tcp-sonar.yaml 
 
-
-./xg make xg-tcp-ecs.yaml
-
-./xg make xg-tcp-jenkins.yaml
-
-./xg make xg-tcp-sonar.yaml
+./xg make $XG_FILE_PATH/xg-tcp-ecs.yaml
+./xg make $XG_FILE_PATH/xg-tcp-jenkins.yaml
+./xg make $XG_FILE_PATH/xg-tcp-jenkins-ami.yaml
+./xg make $XG_FILE_PATH/xg-tcp-java.yaml
+./xg make $XG_FILE_PATH/xg-tcp-angular.yaml
