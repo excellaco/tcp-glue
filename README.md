@@ -77,11 +77,11 @@ Follow the below steps to deploy the following into a clean account. This will b
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
-* **(Experimental)** To use xg for the above instead, do the following: 
+* **(Experimental)** To use xg for the above instead, do the following:
 
     1. Fill out the `.xg/config-tcp-*.yaml files`. There is one for each service. `projectName` will be the name of the respective repo.
     1. RUN: `./xg-go` to clone and configure the repos
-    
+
 1. Create GitHub repos for each of the newly created repos (if you're feeling bold you can try the *experimental* xg approach below)
     1. Create repos in Github manually
     1. Push the newly created local repos to them
@@ -94,7 +94,7 @@ Follow the below steps to deploy the following into a clean account. This will b
 1. Build the Jenkins AMI
     1. cd `../jenkins`  [5]
     1. RUN: `./go`
-      
+
       * Estimated time for completion is: `00:22:30`  
       * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
                 * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
@@ -152,21 +152,25 @@ Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribut
 
 ### Part 3: Application Deployment
 
+### Part 4: Infrastructure Architecture
+
+![TCP Arch](./images/tcp_architecture.png "TCP Architecture")
+
 ### Part 4: Teardown
 
-To destroy the entire stack follow the below steps. 
+To destroy the entire stack follow the below steps.
 
-1. Go into the `tcp-ecs` directory and run: `./go-conatiner-bash`. 
+1. Go into the `tcp-ecs` directory and run: `./go-conatiner-bash`.
 
 You should be in the container's bash. Do the following:
 
 1. `cd terraform-aws-jenkins-stack`  
-1. `./bin/destroy_env` 
+1. `./bin/destroy_env`
 1. `cd ../terraform-aws-sonar-ecs-fargate`  
 1. `./bin/destroy_env`  
 1. `cd ../tcp-ecs`  
 1. `./bin/destroy_env`    
-1. Stop all running tcp containers 
+1. Stop all running tcp containers
 1. Remove any tcp images  
 
 # Using Glue for local development
