@@ -151,6 +151,42 @@ Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribut
 ![SSM Params](./images/ssm_params.png "Sample SSM Parameters")
 
 ### Part 3: Application Deployment
+#### BackEnd - Java
+  1. Navigate to the Jenkins instance as defined in the `sss_parameter` /"project_name"/jenkins/uri (username and password can be found at xxxx/jenkins/user and xxxx/jenkins/pass)  
+  1. Click on BackEnd -> Java
+  1. Click on "New Item" in the Left Tree
+  1. Enter the job name, and select "Multibranch Pipeline"
+  1. In the "Branch Sources" section select "GitHub"
+
+  ![Branch Sources](./images/frontend_sources.png "BackEnd Sources")
+
+  1. Enter the following information and hit save:
+
+  ![FrontEnd Config](./images/java_mulitbranch_config.png "FrontEnd Configuration")
+
+  1. Jobs will automatically start, and the Java application will be deployed.  
+
+#### FrontEnd - Angular  
+  1. Navigate to the Jenkins instance as defined in the `sss_parameter` /"project_name"/jenkins/uri (username and password can be found at xxxx/jenkins/user and xxxx/jenkins/pass)  
+  1. Click on FrontEnd -> AngularFrontEnd
+  1. Click on "New Item" in the Left Tree
+  1. Enter the job name, and select "Multibranch Pipeline"
+  1. In the "Branch Sources" section select "GitHub"
+
+  ![Branch Sources](./images/frontend_sources.png "FrontEnd Sources")
+
+  1. Enter the following information and hit save:
+
+  ![FrontEnd Config](./images/angular_mulitbranch_config.png "FrontEnd Configuration")
+
+  1. Jobs will automatically start, and the Angular application will be deployed.  
+
+#### Application Access  
+Once the application is successfully deployed, you can access the frontend URL via the sss_parameter under `/"project_name"/dev/alb/endpoint`
+ * username: user
+ * password: pass
+
+  ![FrontEnd UI](./images/frontend_ui.png "FrontEnd UI")
 
 ### Part 4: Infrastructure Architecture
 
