@@ -5,6 +5,11 @@ mv config-xg-tcp-ecs.yaml xg-tcp-ecs.yaml
 mv config-xg-tcp-jenkins.yaml xg-tcp-jenkins.yaml
 mv config-xg-tcp-sonar.yaml xg-tcp-sonar.yaml
 
+# mv xg-tcp-ecs.yaml config-xg-tcp-ecs.yaml 
+# mv xg-tcp-jenkins.yaml config-xg-tcp-jenkins.yaml 
+# mv xg-tcp-sonar.yaml config-xg-tcp-sonar.yaml 
+
+
 ./xg make xg-tcp-ecs.yaml
 
 ./xg make xg-tcp-jenkins.yaml
