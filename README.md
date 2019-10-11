@@ -4,7 +4,7 @@ This is where tcp starts. This is where you can stand up a tech challenge platfo
 
 `tcp-glue` provides:
 
-## App and Infrastructure Generation
+## App and Infrastructure Generate
 
 When you finishing going through the tcp creation process, you'll end up with an app with a front-end, back-end, along with pipelines deploying it into cloud infrastructure.
 
@@ -12,19 +12,13 @@ Follow the process below to get started.
 
 ## Local app management
 
-Glue provides enhancements that alleviate pain often experienced when working with multiple repos, including cloning multiple and starting multiple communicating containers together.
-
 * **Clone all repositories** (in the .repos file). If new ones are added it can be run again: `./git-clone-all`. Get onboarding developers running fast.
 * **Start up multiple services**: including core services at once, and specified individual services, all on the same network so they can talk
 * **Update/pull all repos**
 
-See [local development instructions](#Using-Glue-for–local-development) for more information.
-
 # Getting Started
 
-## Stand up Tech Challenge Platform Infrastructure
-
-In this section you will generate new repos with code for the CI/CD and cloud infrastructure. Then, with them configured as you need, you will stand up the infrastructure from the code.
+## Stand up a Tech Challenge Platform
 
 ### Part 1: Prerequisites
 There are some required configurations and setup that must be completed before running the platform.
@@ -68,7 +62,7 @@ Follow the below steps to deploy the following into a clean account. This will b
 * Jenkins AMI & instance
 * Sonar instance
 
-1. Generate and configure repos (default includes front-end, API, IaC for Jenkins and ECS. If you're feeling bold you can try the *experimental* approach below this.)
+1. Generate and configure repos (default includes front-end, API, IaC for Jenkins and ECS)
     1. Fork, clone and cd into https://github.com/excellaco/tcp-glue
     1. RUN: `./git-clone-all` [3]
     1. RUN: `./make-netrc && ./push-netrc`
@@ -77,15 +71,15 @@ Follow the below steps to deploy the following into a clean account. This will b
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
-* **(Experimental)** To use xg for the above instead, do the following: 
+* **(Experimental)** To use xg for the above, do the following:
 
-    1. Fill out the `.xg/config-tcp-*.yaml files`. There is one for each service. `projectName` will be the name of the respective repo.
+    1. Fill out `config-tcp-*.yaml files`. There is one for each service. `projectName` will be the name of the respective repo.
     1. RUN: `./xg-go` to clone and configure the repos
-    
-1. Create GitHub repos for each of the newly created repos (if you're feeling bold you can try the *experimental* xg approach below)
+
+1. Create GitHub repos for each of the newly created repos
     1. Create repos in Github manually
     1. Push the newly created local repos to them
-        Scripts to automate it (untested, must do it manually if these don't work)
+        * **(Experimental)**
         1. Update each name in the `.repos` so it has the repo names
         1. Update the remotes for each repo and push by running `./git-set-remotes && ./git-push-all`
 
@@ -94,7 +88,7 @@ Follow the below steps to deploy the following into a clean account. This will b
 1. Build the Jenkins AMI
     1. cd `../jenkins`  [5]
     1. RUN: `./go`
-      
+
       * Estimated time for completion is: `00:22:30`  
       * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
                 * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
@@ -152,21 +146,25 @@ Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribut
 
 ### Part 3: Application Deployment
 
-### Part 4: Teardown
+### Part 4: Infrastructure Architecture
 
-To destroy the entire stack follow the below steps. 
+![TCP Architecture](./images/tcp_architecture.png "TCP Architecture")
 
-1. Go into the `tcp-ecs` directory and run: `./go-conatiner-bash`. 
+### Part 5: Teardown
+
+To destroy the entire stack follow the below steps.
+
+1. Go into the `tcp-ecs` directory and run: `./go-conatiner-bash`.
 
 You should be in the container's bash. Do the following:
 
 1. `cd terraform-aws-jenkins-stack`  
-1. `./bin/destroy_env` 
+1. `./bin/destroy_env`
 1. `cd ../terraform-aws-sonar-ecs-fargate`  
 1. `./bin/destroy_env`  
 1. `cd ../tcp-ecs`  
 1. `./bin/destroy_env`    
-1. Stop all running tcp containers 
+1. Stop all running tcp containers
 1. Remove any tcp images  
 
 # Using Glue for local development
