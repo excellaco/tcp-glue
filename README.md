@@ -58,7 +58,7 @@ There are some required configurations and setup that must be completed before r
         output = json
         ```
     1. As an added measure run `export AWS_PROFILE=default`
-
+1. If you're using xg, download the binary in the repo root from [here](https://github.com/excellaco/xg-release)
 
 ### Part 2: Infrastructure
 
