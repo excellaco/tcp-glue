@@ -56,6 +56,7 @@ There are some required configurations and setup that must be completed before r
         aws_session_token = FQoGZXIvYXdzEM///////////XXXXXXXXXXX
         ```
     1. As an added measure run `export AWS_PROFILE=default`
+    * NOTE: You *must* use the `~/.aws/credentials` file (as opposed to environment variables or a file in a different location), or later steps will fail
 1. If you're using xg, download the binary in the repo root from [here](https://github.com/excellaco/xg-release)
 
 ### Part 2: Infrastructure
@@ -71,7 +72,7 @@ Follow the below steps to deploy the following into a clean account. This will b
     1. RUN: `./git-clone-all` [3]
     1. RUN: `./make-netrc && ./propagate-netrc`
     1. Fill out `glue.auto.tfvars`
-    1. RUN: `./propagate-glue-auto-tfvars`
+    1. RUN: `./propagate-glue-auto-tfvars` (this will perform some basic checks on the values you provided)
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 

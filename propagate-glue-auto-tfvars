@@ -1,5 +1,38 @@
 #!/bin/bash
 
+set -eu
+
+# first do a syntax check of the values in the file:
+
+get_tf_value() {
+    # check ONLY glue.auto.tfvars:
+    grep -rw glue.auto.tfvars -e "$1" | grep -v "^ *#" | grep -Eo '[\"].*[\""]' | cut -d '"' -f2 | tail -1
+}
+
+dbname=$(get_tf_value db_name)
+if [[ ! $dbname =~ ^[a-z][a-z0-9]*$ ]] ; then
+    echo "ERROR: db_name must be all lowercase alphanumeric, and begin with a letter"
+    echo "The provided value '$dbname' does not meet these restrictions."
+    exit 5
+fi
+
+dbusername=$(get_tf_value db_username)
+if [[ "$dbusername" == "admin" ]] ; then
+    echo "ERROR: db_username cannot be 'admin'"
+    exit 6
+fi
+
+projectname=$(get_tf_value project_name)
+prefix=$(get_tf_value prefix)
+if [[ ! "$projectname" == "$prefix" ]] ; then
+    echo "ERROR: project_name and prefix must be the same"
+    echo "The provided values are: project_name='$projectname', prefix='$prefix'"
+    exit 7
+fi
+
+
+# it's good, so copy it into the sub-projects:
+
 cp -p glue.auto.tfvars tcp-ecs/aws
 cp -p glue.auto.tfvars terraform-aws-sonar-ecs-fargate/sonar
 cp -p glue.auto.tfvars terraform-aws-jenkins-stack/jenkins
