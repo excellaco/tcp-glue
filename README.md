@@ -69,9 +69,9 @@ Follow the below steps to deploy the following into a clean account. This will b
 1. Generate and configure repos (default includes front-end, API, IaC for Jenkins and ECS. If you're feeling bold you can try the *experimental* approach below this.)
     1. Fork, clone and cd into https://github.com/excellaco/tcp-glue [Why do they need to fork it? They won't be changing tcp-glue.]]
     1. RUN: `./git-clone-all` [3]
-    1. RUN: `./make-netrc && ./push-netrc`
+    1. RUN: `./make-netrc && ./propagate-netrc`
     1. Fill out `glue.auto.tfvars`
-    1. RUN: `./push-glue-auto-tfvars`
+    1. RUN: `./propagate-glue-auto-tfvars`
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
