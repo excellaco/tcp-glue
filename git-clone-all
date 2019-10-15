@@ -1,10 +1,12 @@
 #!/bin/bash
 
+set -eux
+
 #### Clones all repos underneath this directoey ####
 
 . .repos
 
 for repo in $repos;
 do
-	git clone $account$repo.git
+    git clone $account$repo.git
 done
