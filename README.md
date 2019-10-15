@@ -95,6 +95,7 @@ Follow the below steps to deploy the following into a clean account. This will b
 
       * Estimated time for completion is: `00:22:30`  
       * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
+      * This step builds the Jenkins AMI; acutally setting up the Jenkins infrastructure stack is a later step
       * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
 
 1. Build the ECS infrastructure via Terraform
@@ -126,6 +127,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         * The "duplicate security group warning" can be ignored.  
 
 1. Build the Jenkins Infrastructure via Terraform
+    NOTE: The "Build the Jenkins AMI" and "Build the ECS Infrastrucutre" steps above must both complete successfully before this step can be run
     1. `cd ../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
@@ -143,7 +145,7 @@ We've leveraged SSM parameters to store all vital information, including URIs, a
 
 Parameters are stored in the form `/"project_name"/"env"/"resource"/"attribute"`
   * The env path is only used when applicable
-  * In the below references, the jenkins password for the tst00 project can be found at: `/tst00/jenkins/pass`
+  * In the below references, the Jenkins password for the tst00 project can be found at: `/tst00/jenkins/pass`
   * In the below references, the Development ECS Cluster ID can be found at: `/tst00/dev/cluser/id`
 
 
