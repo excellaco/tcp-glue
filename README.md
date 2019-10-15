@@ -117,7 +117,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         ```
         This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
 
-1. Build the Sonar infrastructure in ECS via Terraform
+1. Build the Sonar Infrastructure in ECS via Terraform
     1. `cd ../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
@@ -128,7 +128,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         * The "duplicate security group warning" can be ignored.  
 
 1. Build the Jenkins Infrastructure via Terraform
-    NOTE: The "Build the Jenkins AMI" and "Build the ECS Infrastrucutre" steps above must both complete successfully before this step can be run
+    NOTE: The "Build the Jenkins AMI", "Build the ECS Infrastrucutre", and "Build the Sonar Infrastrucutre" steps above must all complete successfully before this step can be run
     1. `cd ../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
