@@ -1,7 +1,0 @@
-#!/bin/bash
-
-cp -p glue.auto.tfvars tcp-ecs/aws
-cp -p glue.auto.tfvars terraform-aws-sonar-ecs-fargate/sonar
-cp -p glue.auto.tfvars terraform-aws-jenkins-stack/jenkins
-
-find . -name glue.auto.tfvars -ls

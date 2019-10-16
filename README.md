@@ -43,6 +43,19 @@ There are some required configurations and setup that must be completed before r
     Once access to an AWS account is available, as well as an `access_key` and `secret_key`, the [AWS CLI Tool](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) must be installed, and configured by running `aws configure`  
 1. Configure the AWS CLI when using MFA
     Special consideration is required when your AWS account is protected with a MFA device.  To configure the CLI, a `token` is required, which will provide temporary credentials.
+    * If you have `awsmfa` installed:
+    1. Use `awsmfa` command to generate credentials
+    Generate credentials with awsmfa (may need to do this on your own laptop):
+    `$ awsmfa 123456` (where 123456 is the current number from your MFA token)
+
+    Copy those credentials to the file `~/.aws/credentials` on the computer you're working on.
+    Then set the file permissions so only you can read or write it:
+
+    `chomd go-rwx ~/.aws/credentials`
+
+    This lets you pass `--aws-profile default` to the `ecs-cli` command.
+
+    * If you do NOT have `awsmfa` installed:
     1. Obtain your [MFA ARN through the AWS Console](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/).
     1. Run the following command:  
         `aws sts get-session-token --serial-number arn-of-the-mfa-device --token-code code-from-token --duration 129600 --output text`
@@ -54,10 +67,12 @@ There are some required configurations and setup that must be completed before r
         aws_access_key_id = ASIARKL72BPXXXXXXXXXXXX
         aws_secret_access_key = LqDp3fFerc6NeDYe2wRXXXXXXXXXX
         aws_session_token = FQoGZXIvYXdzEM///////////XXXXXXXXXXX
-        region = us-east-1
-        output = json
         ```
     1. As an added measure run `export AWS_PROFILE=default`
+
+    * NOTE: You *must* use the `~/.aws/credentials` file (as opposed to environment variables or a file in a different location), or later steps will fail
+    * NOTE: the credentials expire after a set time, usually 6 hours. You will need to regenerate them after they expire, or the following commands will not work.
+
 1. If you're using xg, download the binary in the repo root from [here](https://github.com/excellaco/xg-release)
 
 ### Part 2: Infrastructure
@@ -69,15 +84,16 @@ Follow the below steps to deploy the following into a clean account. This will b
 * Sonar instance
 
 1. Generate and configure repos (default includes front-end, API, IaC for Jenkins and ECS. If you're feeling bold you can try the *experimental* approach below this.)
-    1. Fork, clone and cd into https://github.com/excellaco/tcp-glue
+    1. Clone: `https://github.com/excellaco/tcp-glue`
+    1. RUN:  `cd tcp-glue`
     1. RUN: `./git-clone-all` [3]
-    1. RUN: `./make-netrc && ./push-netrc`
-    1. Fill out glue.auto.tfvars
-    1. RUN: `./push-glue-auto-tfvars`
+    1. RUN: `./make-netrc && ./propagate-netrc`
+    1. Fill out `glue.auto.tfvars`
+    1. RUN: `./propagate-glue-auto-tfvars` (this will perform some basic checks on the values you provided)
     1. RUN: `./update-json-file`
         * This updates the `jenkins/packer/jenkins.json` file with the correct email, region, and source AMI
 
-* **(Experimental)** To use xg for the above instead, do the following:
+    * **(Experimental)** To use xg for the above instead, do the following:
 
     1. Fill out the `.xg/config-tcp-*.yaml files`. There is one for each service. `projectName` will be the name of the respective repo.
     1. RUN: `./xg-go` to clone and configure the repos
@@ -85,28 +101,30 @@ Follow the below steps to deploy the following into a clean account. This will b
 1. Create GitHub repos for each of the newly created repos (if you're feeling bold you can try the *experimental* xg approach below)
     1. Create repos in Github manually
     1. Push the newly created local repos to them
-        Scripts to automate it (untested, must do it manually if these don't work)
+        * Scripts to automate it (untested, must do it manually if these don't work)
         1. Update each name in the `.repos` so it has the repo names
         1. Update the remotes for each repo and push by running `./git-set-remotes && ./git-push-all`
 
     * **(Experimental)** Use [xg publish](https://github.com/excellaco/xg/#publish) instead
 
 1. Build the Jenkins AMI
-    1. cd `../jenkins`  [5]
+    1. cd `jenkins`  [5]
     1. RUN: `./go`
 
       * Estimated time for completion is: `00:22:30`  
       * Note the username and password for Jenkins, found near the beginning of the output  ( if you miss them, they will be available in the ssm_params, see below)
-                * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
+      * This step builds the Jenkins AMI; acutally setting up the Jenkins infrastructure stack is a later step
+      * NOTE: You can allow this process to run in the background, and may continue on to the next steps to save time.
 
 1. Build the ECS infrastructure via Terraform
-    1. RUN: `cd tcp-ecs` [3b]
+    NOTE: This must complete successfully (cf. "follow progress", below) before Sonar or Jenkins Infrastructure can be run
+    1. RUN: `cd ../tcp-ecs` [3b]
     1. RUN: `docker build -t tcp-ecs:latest -f Docker/Dockerfile .`  [3.3]
         * Ensure current directory is `tcp-ecs`  
         * Estimated time for completion is: `00:02:15`  
     1. RUN: `docker run -it --rm -d --name tcp-ecs -v ~/.aws/credentials:/root/.aws/credentials tcp-ecs:latest`  [3.4]
-        * Ensure current directory is tcp-ecs  
-        * Ensure ~/.aws/credentials default profile is set (MFA implications)  (to check: `aws sts get-caller-identity` )
+        * Ensure current directory is `tcp-ecs`
+        * Ensure `~/.aws/credentials` default profile is set (MFA implications)  (to check: `aws sts get-caller-identity` )
         * Follow progress with `docker logs tcp-ecs -f`  
         * Estimated time for completion is: `00:12:30`  
     1. Get the SSH key:
@@ -116,7 +134,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         ```
         This key will allow you to ssh through the bastion host to any of the instances you'll need to connect to.  Keep it somewhere secure but accessible.
 
-1. Build the Sonar infrastructure in ECS via Terraform
+1. Build the Sonar Infrastructure in ECS via Terraform
     1. `cd ../terraform-aws-sonar-ecs-fargate`  [4]
     1. RUN: `docker build -t tcp-sonar:latest -f Docker/Dockerfile .`  
         * Ensure current directory is `terraform-aws-sonar-ecs-fargate`  
@@ -127,6 +145,7 @@ Follow the below steps to deploy the following into a clean account. This will b
         * The "duplicate security group warning" can be ignored.  
 
 1. Build the Jenkins Infrastructure via Terraform
+    NOTE: The "Build the Jenkins AMI", "Build the ECS Infrastrucutre", and "Build the Sonar Infrastrucutre" steps above must all complete successfully before this step can be run
     1. `cd ../terraform-aws-jenkins-stack`  
     1. RUN: `docker build -t tcp-jenkins-app:latest -f Docker/Dockerfile .`  
         * Estimated time for completion is: `00:02:00`  
@@ -140,11 +159,11 @@ Follow the below steps to deploy the following into a clean account. This will b
 1. Steps to setup multibranch pipeline jobs can be found [here](https://github.com/excellaco/terraform-aws-jenkins-stack/wiki/Multibranch-Pipeline-Setup)  
 
 #### Accessing information
-We've leverage SSM parameters to store all vital information, including URIs, and verious credentials.  If you have a question like "What's the Sonar URL?", or "What's the Jenkins Login/Password?", check the SSM parameters in the AWS account.
+We've leveraged SSM parameters to store all vital information, including URIs, and various credentials.  If you have a question like "What's the Sonar URL?", or "What's the Jenkins Login/Password?", check the SSM parameters in the AWS account.
 
-Parameters are stored in the form of `/"project_name"/"env"/"resource"/"attribute"`
+Parameters are stored in the form `/"project_name"/"env"/"resource"/"attribute"`
   * The env path is only used when applicable
-  * In the below references, the jenkins password for the tst00 project can be found at: `/tst00/jenkins/pass`
+  * In the below references, the Jenkins password for the tst00 project can be found at: `/tst00/jenkins/pass`
   * In the below references, the Development ECS Cluster ID can be found at: `/tst00/dev/cluser/id`
 
 
