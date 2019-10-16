@@ -41,8 +41,21 @@ There are some required configurations and setup that must be completed before r
     Access to an AWS account is required.  Please contact `help@excella.com` to gain access to the ExcellaLabs account.  Regardless of the account, an `access_key` and `secret_key` are required for programatic access to the environment.   
 1. AWS CLI install and Configuration  
     Once access to an AWS account is available, as well as an `access_key` and `secret_key`, the [AWS CLI Tool](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) must be installed, and configured by running `aws configure`  
-1. Configure the AWS CLI when using MFA [why aren't we just having them use `awsmfa`?]
+1. Configure the AWS CLI when using MFA
     Special consideration is required when your AWS account is protected with a MFA device.  To configure the CLI, a `token` is required, which will provide temporary credentials.
+    * If you have `awsmfa` installed:
+    1. Use `awsmfa` command to generate credentials
+    Generate credentials with awsmfa (may need to do this on your own laptop):
+    `$ awsmfa 123456` (where 123456 is the current number from your MFA token)
+
+    Copy those credentials to the file `~/.aws/credentials` on the computer you're working on.
+    Then set the file permissions so only you can read or write it:
+
+    `chomd go-rwx ~/.aws/credentials`
+
+    This lets you pass `--aws-profile default` to the `ecs-cli` command.
+
+    * If you do NOT have `awsmfa` installed:
     1. Obtain your [MFA ARN through the AWS Console](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/).
     1. Run the following command:  
         `aws sts get-session-token --serial-number arn-of-the-mfa-device --token-code code-from-token --duration 129600 --output text`
@@ -56,7 +69,10 @@ There are some required configurations and setup that must be completed before r
         aws_session_token = FQoGZXIvYXdzEM///////////XXXXXXXXXXX
         ```
     1. As an added measure run `export AWS_PROFILE=default`
+
     * NOTE: You *must* use the `~/.aws/credentials` file (as opposed to environment variables or a file in a different location), or later steps will fail
+    * NOTE: the credentials expire after a set time, usually 6 hours. You will need to regenerate them after they expire, or the following commands will not work.
+
 1. If you're using xg, download the binary in the repo root from [here](https://github.com/excellaco/xg-release)
 
 ### Part 2: Infrastructure
@@ -68,7 +84,8 @@ Follow the below steps to deploy the following into a clean account. This will b
 * Sonar instance
 
 1. Generate and configure repos (default includes front-end, API, IaC for Jenkins and ECS. If you're feeling bold you can try the *experimental* approach below this.)
-    1. Fork, clone and cd into https://github.com/excellaco/tcp-glue [Why do they need to fork it? They won't be changing tcp-glue.]]
+    1. Clone: `https://github.com/excellaco/tcp-glue`
+    1. RUN:  `cd tcp-glue`
     1. RUN: `./git-clone-all` [3]
     1. RUN: `./make-netrc && ./propagate-netrc`
     1. Fill out `glue.auto.tfvars`
@@ -84,7 +101,7 @@ Follow the below steps to deploy the following into a clean account. This will b
 1. Create GitHub repos for each of the newly created repos (if you're feeling bold you can try the *experimental* xg approach below)
     1. Create repos in Github manually
     1. Push the newly created local repos to them
-        Scripts to automate it (untested, must do it manually if these don't work)
+        * Scripts to automate it (untested, must do it manually if these don't work)
         1. Update each name in the `.repos` so it has the repo names
         1. Update the remotes for each repo and push by running `./git-set-remotes && ./git-push-all`
 
