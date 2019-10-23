@@ -22,13 +22,13 @@ if [[ "$dbusername" == "admin" ]] ; then
     exit 6
 fi
 
-projectname=$(get_tf_value project_name)
-prefix=$(get_tf_value prefix)
-if [[ ! "$projectname" == "$prefix" ]] ; then
-    echo "ERROR: project_name and prefix must be the same"
-    echo "The provided values are: project_name='$projectname', prefix='$prefix'"
-    exit 7
-fi
+# projectname=$(get_tf_value project_name)
+# prefix=$(get_tf_value prefix)
+# if [[ ! "$projectname" == "$prefix" ]] ; then
+#     echo "ERROR: project_name and prefix must be the same"
+#     echo "The provided values are: project_name='$projectname', prefix='$prefix'"
+#     exit 7
+# fi
 
 
 # it's good, so copy it into the sub-projects:
