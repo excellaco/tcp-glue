@@ -22,15 +22,15 @@ echo "===INFO: source_ami : $source_ami"
 head -7 jenkins/packer/jenkins.json > jj.top
 tail -n +8 jenkins/packer/jenkins.json > jj.bottom
 
-sed -i -e 's/"region":.*/"region": "'$aws_region'",/' jj.top
-sed -i -e 's/"source_ami":.*/"source_ami": "'$source_ami'",/' jj.top
-sed -i -e 's/"creator":.*/"creator": "'$aws_email'"/' jj.top
+sed -i~ -e 's/"region":.*/"region": "'$aws_region'",/' jj.top
+sed -i~ -e 's/"source_ami":.*/"source_ami": "'$source_ami'",/' jj.top
+sed -i~ -e 's/"creator":.*/"creator": "'$aws_email'"/' jj.top
 
 mv jenkins/packer/jenkins.json jenkins/packer/jenkins.json.orig
 cat jj.top > jenkins/packer/jenkins.json
 cat jj.bottom >> jenkins/packer/jenkins.json
 
-rm jj.top jj.bottom
+rm jj.top* jj.bottom*
 
 if (diff -q jenkins/packer/jenkins.json jenkins/packer/jenkins.json.orig); then
    echo "===INFO: updated jenkins.json same as previously-existing file"
